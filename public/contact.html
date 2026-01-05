@@ -1,38 +1,154 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>Contact Us</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Web IDS & IPS System</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #fbbf24;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: #92400e;
+        }
+        
+        .warning-box i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            line-height: 1.6;
+        }
+    </style>
 </head>
-
 <body>
-
     <nav>
-        <a href="/">Home</a>
-        <a href="/about">About Us</a>
-        <a href="/contact">Contact Us</a>
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+            <span>SecureAuth</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/contact">Contact Us</a>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        </div>
     </nav>
 
     <div class="container">
-        <h1>Contact Us</h1>
-        <p>Submit your message. Suspicious inputs will be detected by IDS.</p>
+        <div class="contact-header">
+            <h1><i class="fas fa-envelope"></i> Contact Us</h1>
+            <p>Submit your message. Suspicious inputs will be detected by IDS.</p>
+        </div>
 
-        <form method="POST" action="/contact">
-            <label>Name</label>
-            <input type="text" name="name" required>
+        <div class="warning-box">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p><strong>Security Notice:</strong> This form is protected by our IDS/IPS system. Any malicious inputs such as SQL Injection or XSS attempts will be automatically detected and logged.</p>
+        </div>
 
-            <label>Email</label>
-            <input type="email" name="email" required>
+        <div class="contact-form">
+            <form method="POST" action="/contact">
+                <div class="form-group">
+                    <label for="name">
+                        <i class="fas fa-user"></i> Name
+                    </label>
+                    <input type="text" id="name" name="name" required placeholder="Your full name">
+                </div>
 
-            <label>Message</label>
-            <textarea name="message" required></textarea>
+                <div class="form-group">
+                    <label for="email">
+                        <i class="fas fa-envelope"></i> Email
+                    </label>
+                    <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                </div>
 
-            <button type="submit">Send Message</button>
-        </form>
+                <div class="form-group">
+                    <label for="message">
+                        <i class="fas fa-comment"></i> Message
+                    </label>
+                    <textarea id="message" name="message" required placeholder="Enter your message here..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Send Message
+                </button>
+            </form>
+        </div>
     </div>
-
 </body>
-
 </html>

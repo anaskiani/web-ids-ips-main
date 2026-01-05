@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SecureAuth</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        nav .logo {
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 8px 16px;
+            border-radius: 6px;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .dashboard-container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .welcome-section h1 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .welcome-section p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+
+        .info-card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 24px;
+            border-left: 6px solid #667eea;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+
+        .info-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 22px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card p {
+            color: #4b5563;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+
+        .info-card ul li {
+            color: #4b5563;
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .info-card ul li i {
+            color: #10b981;
+            font-size: 16px;
+        }
+
+        .logout-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .loading {
+            text-align: center;
+            color: #6b7280;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                margin: 20px auto;
+                padding: 25px 20px;
+            }
+
+            .welcome-section {
+                padding: 30px 20px;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+            <span>Web IDS & IPS System</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/auth/logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="welcome-section">
+            <h1><i class="fas fa-user-circle"></i> Welcome to Your Dashboard</h1>
+            <p id="user-email" class="loading">Loading...</p>
+        </div>
+
+        <div class="info-card">
+            <h3><i class="fas fa-shield-alt"></i> 3-Factor Authentication</h3>
+            <p>You have successfully logged in using:</p>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Email & Password verification</li>
+                <li><i class="fas fa-check-circle"></i> OTP code sent to your email</li>
+                <li><i class="fas fa-check-circle"></i> Security question verification</li>
+            </ul>
+        </div>
+
+        <div class="info-card">
+            <h3><i class="fas fa-info-circle"></i> Account Information</h3>
+            <p><strong>Email:</strong> <span id="user-email-info">-</span></p>
+            <p><strong>Last Login:</strong> <span id="last-login">-</span></p>
+            <p><strong>Account Created:</strong> <span id="account-created">-</span></p>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="/auth/logout" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Fetch user data
+        fetch('/auth/user-info')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('user-email').textContent = data.user.email;
+                    document.getElementById('user-email-info').textContent = data.user.email;
+                    if (data.user.last_login) {
+                        document.getElementById('last-login').textContent = new Date(data.user.last_login).toLocaleString();
+                    } else {
+                        document.getElementById('last-login').textContent = 'First login';
+                    }
+                    if (data.user.created_at) {
+                        document.getElementById('account-created').textContent = new Date(data.user.created_at).toLocaleString();
+                    }
+                } else {
+                    window.location.href = '/login';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                window.location.href = '/login';
+            });
+    </script>
+</body>
+</html>

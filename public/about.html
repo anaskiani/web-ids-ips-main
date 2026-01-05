@@ -1,25 +1,31 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>About Us</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Web IDS & IPS System</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
-
     <nav>
-        <a href="/">Home</a>
-        <a href="/about">About Us</a>
-        <a href="/contact">Contact Us</a>
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+            <span>SecureAuth</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/contact">Contact Us</a>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        </div>
     </nav>
 
     <div class="container">
-
         <!-- HERO SECTION -->
         <div class="about-hero">
-            <h1>About This Project</h1>
+            <h1><i class="fas fa-info-circle"></i> About This Project</h1>
             <p>
                 A web-based Intrusion Detection and Prevention System (IDS/IPS)
                 developed as an academic project for the Information Security course.
@@ -28,40 +34,42 @@
 
         <!-- PROJECT DESCRIPTION -->
         <div class="about-section">
-            <h2>Project Overview</h2>
+            <h2><i class="fas fa-project-diagram"></i> Project Overview</h2>
             <p>
                 This project demonstrates how web applications can detect and
                 prevent common attacks such as SQL Injection and Cross-Site
                 Scripting (XSS). The system uses a signature-based IDS to analyze
                 user input and an IPS to automatically block repeated attackers.
             </p>
+            <p>
+                The system features a comprehensive 3-factor authentication mechanism
+                that includes email/password verification, OTP-based authentication,
+                and security question validation to ensure maximum security.
+            </p>
         </div>
 
         <!-- TEAM SECTION -->
         <div class="about-section">
-            <h2>Project Team</h2>
+            <h2><i class="fas fa-users"></i> Project Team</h2>
 
             <div class="team">
                 <div class="team-card">
-                    <h3>Muhammad Anas Zamir</h3>
+                    <h3><i class="fas fa-user"></i> Muhammad Anas Zamir</h3>
                     <p>
-                        BS Software Engineering (BSE)<br>
+                        <strong>BS Software Engineering (BSE)</strong><br>
                         Registration No: <strong>233205</strong>
                     </p>
                 </div>
 
                 <div class="team-card">
-                    <h3>Ahmed Saqib</h3>
+                    <h3><i class="fas fa-user"></i> Ahmed Saqib</h3>
                     <p>
-                        BS Software Engineering (BSE)<br>
+                        <strong>BS Software Engineering (BSE)</strong><br>
                         Registration No: <strong>233131</strong>
                     </p>
                 </div>
             </div>
         </div>
-
     </div>
-
 </body>
-
 </html>

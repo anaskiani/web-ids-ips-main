@@ -1,39 +1,45 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>Web IDS & IPS System</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web IDS & IPS System</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
-
     <nav>
-        <a href="/">Home</a>
-        <a href="/about">About Us</a>
-        <a href="/contact">Contact Us</a>
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+            <span>Web IDS & IPS System</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/contact">Contact Us</a>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        </div>
     </nav>
 
     <div class="container">
-
         <!-- HERO SECTION -->
         <div class="hero">
-            <h1>Web-Based IDS & IPS System</h1>
+            <h1><i class="fas fa-shield-alt"></i> Web-Based IDS & IPS System</h1>
             <p>
                 A security-focused web application that detects
                 malicious inputs such as SQL Injection and XSS attacks
                 and automatically prevents repeated attackers.
             </p>
             <button onclick="window.location.href='/contact'">
-                Try IDS Detection
+                <i class="fas fa-flask"></i> Try IDS Detection
             </button>
         </div>
 
         <!-- FEATURES -->
         <div class="features">
             <div class="feature-box">
-                <h3>Intrusion Detection (IDS)</h3>
+                <h3><i class="fas fa-search"></i> Intrusion Detection (IDS)</h3>
                 <p>
                     Detects suspicious user inputs using
                     signature-based pattern matching.
@@ -41,7 +47,7 @@
             </div>
 
             <div class="feature-box">
-                <h3>Intrusion Prevention (IPS)</h3>
+                <h3><i class="fas fa-ban"></i> Intrusion Prevention (IPS)</h3>
                 <p>
                     Automatically blocks IP addresses after
                     repeated malicious attempts.
@@ -49,7 +55,7 @@
             </div>
 
             <div class="feature-box">
-                <h3>User-Friendly Interface</h3>
+                <h3><i class="fas fa-user-friends"></i> User-Friendly Interface</h3>
                 <p>
                     Clean and simple interface to demonstrate
                     security concepts clearly.
@@ -57,7 +63,7 @@
             </div>
 
             <div class="feature-box">
-                <h3>Attack Logging</h3>
+                <h3><i class="fas fa-file-alt"></i> Attack Logging</h3>
                 <p>
                     All detected attacks are logged for
                     analysis and auditing purposes.
@@ -66,11 +72,8 @@
         </div>
 
         <div class="footer">
-            <p>Academic Project – Information Security</p>
+            <p><i class="fas fa-graduation-cap"></i> Academic Project – Information Security</p>
         </div>
-
     </div>
-
 </body>
-
 </html>
