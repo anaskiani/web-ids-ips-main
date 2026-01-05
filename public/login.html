@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Secure 3-Factor Authentication</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        nav .logo {
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            padding: 8px 16px;
+            border-radius: 6px;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            opacity: 1;
+        }
+
+        .auth-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .auth-container {
+            max-width: 480px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 40px 30px;
+            text-align: center;
+        }
+
+        .auth-header h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .auth-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .auth-body {
+            padding: 40px;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #e5e7eb;
+            z-index: 0;
+            border-radius: 2px;
+        }
+
+        .step-indicator::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            z-index: 1;
+            border-radius: 2px;
+            transition: width 0.5s ease;
+            width: var(--progress, 0%);
+        }
+
+        .step {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .step.completed {
+            background: #10b981;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .step.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .auth-step {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .auth-step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .step-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .step-subtitle {
+            text-align: center;
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 16px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            margin-top: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 14px;
+            background: #6b7280;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .alert {
+            padding: 14px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #059669;
+            border: 1px solid #6ee7b7;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #2563eb;
+            border: 1px solid #93c5fd;
+        }
+
+        .otp-info {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            text-align: center;
+            border: 2px solid #bae6fd;
+        }
+
+        .otp-info p {
+            margin: 4px 0;
+            color: #0c4a6e;
+            font-size: 14px;
+        }
+
+        #otp-display {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            text-align: center;
+            border: 2px solid #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        #otp-display p:first-child {
+            margin: 0 0 12px 0;
+            font-weight: 700;
+            color: #1e40af;
+            font-size: 14px;
+        }
+
+        #otp-code-display {
+            margin: 12px 0;
+            font-size: 32px;
+            font-weight: 700;
+            color: #2563eb;
+            letter-spacing: 8px;
+            font-family: 'Courier New', monospace;
+        }
+
+        #otp-display p:last-child {
+            margin: 12px 0 0 0;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .back-link a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 640px) {
+            .auth-body {
+                padding: 30px 20px;
+            }
+
+            .auth-header {
+                padding: 30px 20px 20px;
+            }
+
+            .step {
+                width: 36px;
+                height: 36px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+            <span>Web IDS & IPS System</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/contact">Contact Us</a>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        </div>
+    </nav>
+
+    <div class="auth-wrapper">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h2><i class="fas fa-lock"></i> Secure Login</h2>
+                <p>3-Factor Authentication System</p>
+                <p style="font-size: 12px; margin-top: 8px; opacity: 0.8;">
+                    <i class="fas fa-shield-alt"></i> Protected by IDS/IPS
+                </p>
+            </div>
+
+            <div class="auth-body">
+                <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #fbbf24; border-radius: 12px; padding: 15px; margin-bottom: 25px; color: #92400e; font-size: 13px; text-align: center;">
+                    <i class="fas fa-shield-alt"></i> <strong>Security Notice:</strong> This form is protected by IDS/IPS. Malicious inputs will be detected and logged.
+                </div>
+                
+                <div class="step-indicator" id="step-indicator">
+                    <div class="step active" id="step1-indicator">1</div>
+                    <div class="step" id="step2-indicator">2</div>
+                    <div class="step" id="step3-indicator">3</div>
+                </div>
+
+                <div id="alert-container"></div>
+
+                <!-- Step 1: Email & Password -->
+                <div class="auth-step active" id="step1">
+                    <h3 class="step-title"><i class="fas fa-envelope"></i> Email & Password</h3>
+                    <p class="step-subtitle">Enter your credentials to begin</p>
+                    <form id="step1-form">
+                        <div class="form-group">
+                            <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="email" name="email" required autocomplete="email" placeholder="your.email@example.com">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password"><i class="fas fa-lock"></i> Password</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Enter your password">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-arrow-right"></i> Continue to Step 2
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Step 2: OTP Verification -->
+                <div class="auth-step" id="step2">
+                    <h3 class="step-title"><i class="fas fa-key"></i> OTP Verification</h3>
+                    <p class="step-subtitle">Enter the code sent to your email</p>
+                    <div class="otp-info" id="otp-info">
+                        <p><i class="fas fa-envelope-open"></i> An OTP has been sent to your email address.</p>
+                        <p>Please check your inbox and enter the code below.</p>
+                    </div>
+                    <div id="otp-display" style="display: none;">
+                        <p><i class="fas fa-exclamation-triangle"></i> Development Mode - Your OTP Code:</p>
+                        <p id="otp-code-display"></p>
+                        <p>(Also check server console)</p>
+                    </div>
+                    <form id="step2-form">
+                        <div class="form-group">
+                            <label for="otp"><i class="fas fa-key"></i> Enter OTP Code</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-key"></i>
+                                <input type="text" id="otp" name="otp" required maxlength="6" pattern="[0-9]{6}" placeholder="000000" style="text-align: center; letter-spacing: 8px; font-size: 20px; font-weight: bold;">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-check"></i> Verify OTP
+                        </button>
+                        <button type="button" class="btn-secondary" id="resend-otp">
+                            <i class="fas fa-redo"></i> Resend OTP
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Step 3: Security Question -->
+                <div class="auth-step" id="step3">
+                    <h3 class="step-title"><i class="fas fa-question-circle"></i> Security Question</h3>
+                    <p class="step-subtitle">Answer your security question</p>
+                    <form id="step3-form">
+                        <div class="form-group">
+                            <label id="security-question-label"><i class="fas fa-question"></i> Security Question</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-question-circle"></i>
+                                <input type="text" id="security-answer" name="security-answer" required placeholder="Enter your answer">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-check-circle"></i> Complete Login
+                        </button>
+                    </form>
+                </div>
+
+                <div class="back-link">
+                    <a href="/"><i class="fas fa-arrow-left"></i> Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let sessionToken = null;
+
+        function showAlert(message, type = 'error') {
+            const alertContainer = document.getElementById('alert-container');
+            const icon = type === 'error' ? 'fa-exclamation-circle' : type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
+            alertContainer.innerHTML = `<div class="alert alert-${type}"><i class="fas ${icon}"></i> ${message}</div>`;
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        function updateStepIndicator(step) {
+            const indicator = document.getElementById('step-indicator');
+            const progress = ((step - 1) / 2) * 100;
+            indicator.style.setProperty('--progress', progress + '%');
+
+            for (let i = 1; i <= 3; i++) {
+                const stepEl = document.getElementById(`step${i}-indicator`);
+                stepEl.classList.remove('active', 'completed');
+                if (i < step) {
+                    stepEl.classList.add('completed');
+                } else if (i === step) {
+                    stepEl.classList.add('active');
+                }
+            }
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.auth-step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+            updateStepIndicator(step);
+            currentStep = step;
+        }
+
+        // Step 1: Email & Password
+        document.getElementById('step1-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/auth/login-step1', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    sessionToken = data.sessionToken;
+                    
+                    if (data.otp) {
+                        document.getElementById('otp-display').style.display = 'block';
+                        document.getElementById('otp-code-display').textContent = data.otp;
+                        document.getElementById('otp-info').innerHTML = '<p style="color: #dc2626; font-weight: bold;"><i class="fas fa-exclamation-triangle"></i> Email not configured - OTP shown below</p>';
+                        console.log('🔑 Your OTP Code:', data.otp);
+                    } else {
+                        document.getElementById('otp-display').style.display = 'none';
+                        showAlert('Password verified! Check your email for OTP.', 'success');
+                    }
+                    
+                    setTimeout(() => showStep(2), 1000);
+                } else {
+                    showAlert(data.message || 'Invalid email or password', 'error');
+                }
+            } catch (error) {
+                showAlert('An error occurred. Please try again.', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        // Step 2: OTP Verification
+        document.getElementById('step2-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const otp = document.getElementById('otp').value;
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/auth/login-step2', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sessionToken, otp })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('OTP verified! Proceed to security question.', 'success');
+                    document.getElementById('security-question-label').innerHTML = `<i class="fas fa-question"></i> ${data.securityQuestion}`;
+                    setTimeout(() => showStep(3), 1000);
+                } else {
+                    showAlert(data.message || 'Invalid OTP code', 'error');
+                }
+            } catch (error) {
+                showAlert('An error occurred. Please try again.', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        // Resend OTP
+        document.getElementById('resend-otp').addEventListener('click', async () => {
+            const btn = document.getElementById('resend-otp');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/auth/resend-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sessionToken })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    if (data.otp) {
+                        document.getElementById('otp-display').style.display = 'block';
+                        document.getElementById('otp-code-display').textContent = data.otp;
+                        showAlert('OTP Resent! Code shown below', 'success');
+                        console.log('🔑 Your New OTP Code:', data.otp);
+                    } else {
+                        showAlert('OTP has been resent to your email.', 'success');
+                    }
+                } else {
+                    showAlert(data.message || 'Failed to resend OTP', 'error');
+                }
+            } catch (error) {
+                showAlert('An error occurred. Please try again.', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        // Step 3: Security Question
+        document.getElementById('step3-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const securityAnswer = document.getElementById('security-answer').value;
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Completing...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/auth/login-step3', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sessionToken, securityAnswer })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('Login successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = data.redirectUrl || '/dashboard';
+                    }, 1500);
+                } else {
+                    showAlert(data.message || 'Invalid security answer', 'error');
+                }
+            } catch (error) {
+                showAlert('An error occurred. Please try again.', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

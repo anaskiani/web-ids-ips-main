@@ -47,6 +47,28 @@ connection.connect(err => {
                     payload TEXT,
                     detected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
+
+                CREATE TABLE IF NOT EXISTS users (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    email VARCHAR(255) UNIQUE NOT NULL,
+                    password_hash VARCHAR(255) NOT NULL,
+                    security_question VARCHAR(255) NOT NULL,
+                    security_answer_hash VARCHAR(255) NOT NULL,
+                    otp_secret VARCHAR(255),
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    last_login TIMESTAMP NULL
+                );
+
+                CREATE TABLE IF NOT EXISTS login_sessions (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    user_id INT NOT NULL,
+                    session_token VARCHAR(255) NOT NULL,
+                    step_completed INT DEFAULT 0,
+                    otp_code VARCHAR(10),
+                    otp_expires_at TIMESTAMP,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                );
             `, err => {
                 if (err) {
                     console.error("❌ Table creation failed:", err);
