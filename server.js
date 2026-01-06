@@ -54,9 +54,12 @@ const transporter = nodemailer.createTransport({
     tls: {
         rejectUnauthorized: false // Allow self-signed certificates if needed
     },
-    connectionTimeout: 10000, // 10 seconds
-    greetingTimeout: 10000,
-    socketTimeout: 10000
+    connectionTimeout: 15000, // 15 seconds
+    greetingTimeout: 15000,
+    socketTimeout: 15000,
+    pool: true, // Use connection pooling
+    maxConnections: 5,
+    maxMessages: 100
 });
 
 // Helper function to send email (fallback if email not configured)
@@ -141,14 +144,10 @@ app.use((req, res, next) => {
 
         console.log(`🚨 IDS ALERT (${attackCounter[ip]}) from ${ip}`);
 
-        // 🛑 IPS AFTER 3 ATTEMPTS
-        if (attackCounter[ip] >= 3) {
-            blockedIPs.add(ip);
-            console.log(`🛑 IPS BLOCKED IP: ${ip}`);
-            return res.status(403).send("🛑 IPS: You are blocked");
-        }
-
-        return res.status(400).send("🚨 Malicious input detected");
+        // 🛑 IPS IMMEDIATE BLOCK ON FIRST ATTACK
+        blockedIPs.add(ip);
+        console.log(`🛑 IPS BLOCKED IP: ${ip} (Immediate block on first attack)`);
+        return res.status(403).send("🛑 IPS: You are blocked");
     }
 
     next();
@@ -164,15 +163,27 @@ function requireAuth(req, res, next) {
 
 // ================= ROUTES =================
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+    if (req.session && req.session.userId) {
+        res.sendFile(path.join(__dirname, "public", "index.html"));
+    } else {
+        res.sendFile(path.join(__dirname, "public", "landing.html"));
+    }
 });
 
 app.get("/about", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "about.html"));
+    if (req.session && req.session.userId) {
+        res.sendFile(path.join(__dirname, "public", "about.html"));
+    } else {
+        res.redirect("/login");
+    }
 });
 
 app.get("/contact", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "contact.html"));
+    if (req.session && req.session.userId) {
+        res.sendFile(path.join(__dirname, "public", "contact.html"));
+    } else {
+        res.redirect("/login");
+    }
 });
 
 app.get("/login", (req, res) => {
@@ -294,7 +305,7 @@ app.post("/auth/login-step1", async (req, res) => {
                 const emailResult = await sendEmail(email, "Your Login OTP Code", `Your OTP code is: ${otpCode}\n\nThis code will expire in 5 minutes.`);
                 
                 // In development mode or if email fails, include OTP in response
-                const isDevelopment = process.env.NODE_ENV !== 'production' || !process.env.SMTP_USER;
+                const isDevelopment = process.env.NODE_ENV === 'development' && !emailResult.success;
                 const responseMessage = emailResult.success 
                     ? "Password verified. OTP sent to your email."
                     : "Password verified. Check console for OTP (email not configured).";

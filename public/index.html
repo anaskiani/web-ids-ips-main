@@ -17,14 +17,18 @@
             <a href="/">Home</a>
             <a href="/about">About Us</a>
             <a href="/contact">Contact Us</a>
-            <a href="/login">Login</a>
-            <a href="/register">Register</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/auth/logout" onclick="return confirm('Are you sure you want to logout?')">Logout</a>
         </div>
     </nav>
 
     <div class="container">
         <!-- HERO SECTION -->
         <div class="hero">
+            <div class="welcome-message">
+                <h2><i class="fas fa-user-shield"></i> Welcome to Web IDS & IPS System</h2>
+                <p>You are successfully logged in and protected by our security system.</p>
+            </div>
             <h1><i class="fas fa-shield-alt"></i> Web-Based IDS & IPS System</h1>
             <p>
                 A security-focused web application that detects
