@@ -9,7 +9,7 @@ A web-based **Intrusion Detection System (IDS)** and **Intrusion Prevention Syst
     *   Logs attacks to the database (`attack_logs`).
     *   Alerts the admin via console logs.
 *   **Intrusion Prevention System (IPS)**:
-    *   Automatically blocks IP addresses after **3 malicious attempts**.
+    *   Automatically blocks IP addresses .
     *   Denies access to blocked IPs.
 *   **Secure Contact Form**:
     *   Saves messages to a MySQL database (`contact_messages`).
@@ -30,8 +30,9 @@ A web-based **Intrusion Detection System (IDS)** and **Intrusion Prevention Syst
 2.  Install dependencies:
     ```bash
     npm install
+
     ```
-3.  Configure your database in `database/initDb.js` or use a `.env` file.
+3.     npm install dotenv
 4.  Start the server:
     ```bash
     node server.js
