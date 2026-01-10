@@ -1,12 +1,12 @@
 const mysql = require("mysql2");
 
-const DB_NAME = process.env.DB_NAME || "web_ids_ips";
+const DB_NAME = process.env.MYSQLDATABASE || "web_ids_ips";
 
 const connection = mysql.createConnection({
-    host: process.env.DB_HOST || "localhost",
-    user: process.env.DB_USER || "root",
-    password: process.env.DB_PASSWORD || "",
-    port: process.env.DB_PORT || 3306,
+    host: process.env.MYSQLHOST,        // Railway MySQL host
+    user: process.env.MYSQLUSER,        // Railway MySQL user
+    password: process.env.MYSQLPASSWORD,
+    port: process.env.MYSQLPORT || 3306,
     multipleStatements: true
 });
 
@@ -17,7 +17,6 @@ connection.connect(err => {
     }
     console.log("✅ MySQL Connected");
 
-    // Create database (only if permitted)
     connection.query(`CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\``, err => {
         if (err) {
             console.error("❌ DB creation failed:", err);
@@ -31,7 +30,6 @@ connection.connect(err => {
                 return;
             }
 
-            // Create tables
             connection.query(`
                 CREATE TABLE IF NOT EXISTS contact_messages (
                     id INT AUTO_INCREMENT PRIMARY KEY,

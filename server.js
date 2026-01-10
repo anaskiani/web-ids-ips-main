@@ -98,7 +98,49 @@ if (!fs.existsSync("logs")) {
 }
 
 // ================= IDS / IPS CONFIG =================
-const attackRegex = /(\b(or|and)\b\s+\d+\s*=\s*\d+|union\s+select|select\s+.+\s+from|insert\s+into|drop\s+table|update\s+.+\s+set|delete\s+from|<\s*script|javascript:|onerror\s*=|onload\s*=)/i;
+// Helper: normalize input (decode url-encoding and common HTML entities)
+function normalizeInput(input) {
+    if (!input) return '';
+    try {
+        // decode percent-encoding first
+        input = decodeURIComponent(String(input));
+    } catch (e) {
+        // ignore malformed sequences
+    }
+
+    // decode basic HTML entities
+    input = input.replace(/&lt;/gi, '<')
+                 .replace(/&gt;/gi, '>')
+                 .replace(/&quot;/gi, '"')
+                 .replace(/&#x27;/gi, "'")
+                 .replace(/&amp;/gi, '&');
+
+    return String(input);
+}
+
+// Combined detection for XSS, HTML tags, event handlers, protocol-based payloads and SQL keywords
+function detectAttack(raw) {
+    if (!raw || typeof raw !== 'string') return false;
+
+    const s = normalizeInput(raw);
+
+    // 1) obvious HTML tags that can be used for XSS / injection
+    const tagRegex = /<\s*\/?\s*(script|iframe|img|svg|math|object|embed|link|meta|style|base|form|input|button|textarea|select|a|frame|frameset|applet|body|head|html)[\s>\/]/i;
+
+    // 2) inline event handlers (onload=, onclick=, onerror= etc.)
+    const eventHandlerRegex = /\bon\w+\s*=\s*/i;
+
+    // 3) javascript: or other dangerous protocols, document/window properties, eval / innerHTML usage
+    const protocolRegex = /javascript:|vbscript:|data:text\/html|file:|eval\(|document\.cookie|document\.write|window\.location|innerHTML|outerHTML|location\.href/i;
+
+    // 4) URL / HTML encoded angle brackets or %3C / %3E
+    const encodedRegex = /%3C|%3E|&lt;|&gt;/i;
+
+    // 5) basic SQL injection / union patterns (keep existing patterns)
+    const sqlRegex = /(\b(or|and)\b\s+\d+\s*=\s*\d+|union\s+select|select\s+.+\s+from|insert\s+into|drop\s+table|update\s+.+\s+set|delete\s+from)/i;
+
+    return tagRegex.test(s) || eventHandlerRegex.test(s) || protocolRegex.test(s) || encodedRegex.test(s) || sqlRegex.test(s);
+}
 
 
 const attackCounter = {};     // { ip: count }
@@ -128,8 +170,8 @@ app.use((req, res, next) => {
         });
     }
 
-    // 🚨 IDS DETECTION
-    if (attackRegex.test(userInput)) {
+    // 🚨 IDS DETECTION (normalize and check multiple patterns)
+    if (detectAttack(userInput)) {
         attackCounter[ip] = (attackCounter[ip] || 0) + 1;
 
         fs.appendFileSync(
