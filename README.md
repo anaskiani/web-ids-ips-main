@@ -14,7 +14,7 @@ A web-based **Intrusion Detection System (IDS)** and **Intrusion Prevention Syst
 *   **Secure Contact Form**:
     *   Saves messages to a MySQL database (`contact_messages`).
     *   Displays a professional confirmation page.
-*   **Admin Panel**:
+*   **Admin Panel in development mode right now**:
     *   `/admin/messages`: View customer messages.
     *   `/admin/attacks`: View a log of detected attacks.
 
@@ -42,8 +42,8 @@ A web-based **Intrusion Detection System (IDS)** and **Intrusion Prevention Syst
 ## 🧪 Testing IDS/IPS
 
 Try entering a malicious payload like `' OR 1=1 --` in the contact form.
-*   **First Attempt**: Warning "Malicious input detected".
-*   **Third Attempt**: Your IP will be **BLOCKED**.
+*
+*   **First Attempt**: Your IP will be **BLOCKED**.
 
 ---
 *Created for Cyber Security Project*
